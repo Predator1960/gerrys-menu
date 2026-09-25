@@ -78,6 +78,22 @@
     display: grid; place-items: center;
   }
   .qr svg { width: 100%; height: 100%; display: block; }
+  .qr-box[role="button"] { cursor: pointer; }
+  .qr-big {
+    position: fixed; inset: 0; z-index: 20;
+    background: rgba(42, 18, 15, 0.72);
+    display: grid; place-items: center; padding: 16px;
+  }
+  .qr-big[hidden] { display: none; }
+  .qr-big-card {
+    background: #fff; border: 4px solid var(--green); border-radius: 20px;
+    padding: 20px; width: min(340px, 100%); text-align: center;
+    box-shadow: 0 5px 0 var(--green-dark), var(--shadow-lg);
+  }
+  .qr-big-title { font-family: var(--heading); font-weight: 800; font-size: 20px; color: var(--red); margin-bottom: 14px; }
+  .qr-big-code { width: 100%; aspect-ratio: 1; }
+  .qr-big-code svg { width: 100%; height: 100%; display: block; }
+  .qr-big-hint { font-size: 13px; font-weight: 600; color: var(--green-dark); margin-top: 14px; }
   .qr.placeholder {
     border-style: dashed; color: var(--green-dark);
     font-size: 11px; font-weight: 700; line-height: 1.2; padding: 6px;
@@ -344,7 +360,7 @@
     <div class="hero-row">
       <figure class="qr-box">
         <div class="qr" id="qr"></div>
-        <figcaption>Scan for<br />the app</figcaption>
+        <figcaption>Share with<br />friends</figcaption>
       </figure>
       <div class="hero-title">
         <div class="hero-icon">🐟</div>
@@ -389,12 +405,20 @@
   <p class="footer">Prices from the in-store menu board · <strong>Gerry's Fish Bar</strong></p>
 </main>
 
+<div class="qr-big" id="qrBig" hidden>
+  <div class="qr-big-card">
+    <div class="qr-big-title">Scan to get Gerry's menu</div>
+    <div class="qr-big-code"></div>
+    <div class="qr-big-hint">Point your friend's camera here · tap anywhere to close</div>
+  </div>
+</div>
+
 <div class="bar" id="bar"><button type="button" id="barBtn"><span id="barCount"></span><span id="barTotal"></span></button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
   // ---- Contact details: edit these two lines ----
-  const APP_URL = '';             // Gerry's app download link — QR box stays hidden until this is set
+  const APP_URL = 'https://gerrys-menu.vercel.app/';  // friends scan this from your screen to get the menu
   const PHONE = '01534 610958';   // from public business listings — confirm with Gerry's
 
   document.getElementById('phoneNum').textContent = PHONE;
@@ -404,7 +428,19 @@
     const qr = qrcode(0, 'M');
     qr.addData(APP_URL);
     qr.make();
-    qrEl.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    const svg = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    qrEl.innerHTML = svg;
+    // Tap the small code to show it big, so a friend's camera can read it easily.
+    const big = document.getElementById('qrBig');
+    big.querySelector('.qr-big-code').innerHTML = svg;
+    const box = qrEl.closest('.qr-box');
+    box.setAttribute('role', 'button');
+    box.setAttribute('tabindex', '0');
+    box.setAttribute('aria-label', 'Show the share code bigger');
+    const openBig = () => { big.hidden = false; };
+    box.addEventListener('click', openBig);
+    box.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openBig(); } });
+    big.addEventListener('click', () => { big.hidden = true; });
   } else {
     // No app link yet: hide the QR box but keep its space so the title stays centred.
     qrEl.closest('.qr-box').style.visibility = 'hidden';
