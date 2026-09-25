@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Gerry's Fish Bar Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Gerry's palette: logo red, logo green, chip gold, cream paper */
+    --text: #3a2b22;
+    --text-h: #2a120f;
+    --bg: #fbf4e6;
+    --bg-glow: rgba(214, 40, 40, 0.1);
+    --card-bg: #ffffff;
+    --border: #ecdcc4;
+    --red: #d62828;
+    --red-2: #ec4a3c;
+    --red-dark: #8f1418;
+    --green: #1f6b35;
+    --green-dark: #0f4520;
+    --green-bg: rgba(31, 107, 53, 0.08);
+    --gold: #e8a91c;
+    --cream: #fff4d6;
+    --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+    --heading: 'Plus Jakarta Sans', var(--sans);
+    --shadow-sm: 0 1px 2px rgba(60, 20, 10, 0.08);
+    --shadow-md: 0 4px 14px rgba(60, 20, 10, 0.1);
+    --shadow-lg: 0 10px 30px rgba(60, 20, 10, 0.16);
+    font: 16px/145% var(--sans);
+    color-scheme: light;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% 0%, var(--bg-glow), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100svh;
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom));
+  }
+
+  /* Hero */
+  .hero { text-align: center; margin: 8px 0 18px; }
+  .hero-icon { font-size: 40px; filter: drop-shadow(var(--shadow-sm)); }
+  .hero h1 {
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: -0.4px;
+    line-height: 1.05;
+    margin: 4px 0 0;
+    color: var(--red);
+    text-shadow: 0 2px 0 rgba(143, 20, 24, 0.12);
+  }
+  .hero h1 span { display: block; color: var(--green); font-size: 22px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+  .hero-row {
+    display: grid;
+    grid-template-columns: 84px 1fr 84px;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-title { min-width: 0; }
+  .qr-box { margin: 0; text-align: center; }
+  .qr {
+    width: 84px; height: 84px; padding: 5px;
+    background: #fff; border: 2px solid var(--green); border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+    display: grid; place-items: center;
+  }
+  .qr svg { width: 100%; height: 100%; display: block; }
+  .qr.placeholder {
+    border-style: dashed; color: var(--green-dark);
+    font-size: 11px; font-weight: 700; line-height: 1.2; padding: 6px;
+  }
+  .qr-box figcaption, .phone-label {
+    font-size: 11px; font-weight: 700; color: var(--green-dark);
+    line-height: 1.2; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .phone {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    text-decoration: none; text-align: center;
+  }
+  .phone-icon {
+    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 20px;
+    background: linear-gradient(180deg, var(--red-2), var(--red) 65%, var(--red-dark));
+    border: 1px solid var(--red-dark); box-shadow: 0 2px 0 var(--red-dark), var(--shadow-sm);
+  }
+  .phone-num {
+    font-family: var(--heading); font-weight: 800; font-size: 13px; color: var(--red);
+    line-height: 1.15; font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 360px) {
+    .hero-row { grid-template-columns: 70px 1fr 70px; }
+    .qr { width: 70px; height: 70px; }
+    .hero h1 { font-size: 26px; }
+  }
+  .hero-rule { width: 120px; height: 3px; margin: 12px auto 0; border-radius: 3px; background: var(--green); opacity: 0.8; }
+
+  /* Controls */
+  .controls { display: flex; gap: 8px; margin-bottom: 4px; }
+  .search {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    font: inherit;
+    font-size: 15px;
+    color: var(--text-h);
+    box-shadow: var(--shadow-sm);
+  }
+  .search:focus { outline: 2px solid var(--green); outline-offset: 1px; }
+  .toggle-all {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--green-dark);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Category pill — same glossy button as the splitter, in Gerry's red */
+  .category-group { margin-top: 14px; }
+  .category-pill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 13px 44px;
+    border-radius: 999px;
+    cursor: pointer;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 45%),
+      linear-gradient(180deg, var(--red-2), var(--red) 65%, var(--red-dark));
+    color: var(--cream);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--red-dark);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 3px 0 var(--red-dark), var(--shadow-md);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .category-pill:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 4px 0 var(--red-dark), var(--shadow-lg); }
+  .category-pill:active { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 0 var(--red-dark), var(--shadow-sm); }
+  .folder-count { font-weight: 600; opacity: 0.85; }
+  .chev { position: absolute; right: 18px; transition: transform 0.15s ease; }
+  .category-group.open .chev { transform: rotate(90deg); }
+
+  /* Sub-section header — green left bar, like the splitter's */
+  .subsection-header {
+    background: var(--green-bg);
+    border: 1px solid var(--green);
+    border-left: 6px solid var(--green);
+    color: var(--green-dark);
+    border-radius: 8px;
+    margin: 10px 0 0 12px;
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 9px 12px;
+  }
+
+  .items { display: none; flex-direction: column; gap: 6px; margin: 10px 0 4px 12px; }
+  .category-group.open .items { display: flex; }
+
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .item-name { color: var(--text-h); font-weight: 500; }
+  .item-price {
+    flex-shrink: 0;
+    font-family: var(--heading);
+    font-weight: 800;
+    color: var(--red);
+    font-variant-numeric: tabular-nums;
+  }
+  .note { font-size: 13px; color: var(--green-dark); margin: 2px 0 0 12px; }
+
+  .empty { display: none; text-align: center; color: var(--text); font-size: 14px; margin-top: 24px; }
+  .footer { text-align: center; font-size: 12px; color: #7a6a5c; margin-top: 28px; }
+  .footer strong { color: var(--green); }
+
+  /* Who's ordering */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--green-dark);
+    margin: 0 0 8px;
+  }
+  .hint { font-size: 13px; margin: 0 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--green);
+    background: var(--green-bg);
+    color: var(--green-dark);
+    font: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .chip.active {
+    background: linear-gradient(180deg, #2d8a48, var(--green) 65%, var(--green-dark));
+    color: #fff;
+    border-color: var(--green-dark);
+    box-shadow: 0 2px 0 var(--green-dark);
+  }
+  .chip .chip-total { font-weight: 600; opacity: 0.85; font-size: 12px; }
+  .chip .chip-x { margin-left: 2px; opacity: 0.7; font-size: 15px; line-height: 1; }
+  .add-row { display: flex; gap: 6px; margin-top: 10px; }
+  .add-row input {
+    flex: 1; min-width: 0; padding: 9px 12px; border-radius: 10px;
+    border: 1px solid var(--border); font: inherit; font-size: 15px;
+  }
+  .add-row input:focus { outline: 2px solid var(--green); outline-offset: 1px; }
+  .add-row button, .small-btn {
+    padding: 9px 14px; border-radius: 10px; border: 1px solid var(--green-dark);
+    background: var(--green); color: #fff; font-weight: 700; font: inherit; font-weight: 700; cursor: pointer;
+  }
+
+  /* Steppers on menu items */
+  .item-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .stepper { display: flex; align-items: center; gap: 4px; }
+  .step {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1px solid var(--red-dark);
+    background: linear-gradient(180deg, var(--red-2), var(--red) 70%, var(--red-dark));
+    color: #fff; font-size: 18px; font-weight: 800; line-height: 1;
+    cursor: pointer; display: grid; place-items: center; padding: 0;
+  }
+  .step.minus { background: #fff; color: var(--red); border-color: var(--border); }
+  .step.minus[hidden], .qty[hidden] { display: none; }
+  .qty { min-width: 18px; text-align: center; font-weight: 800; color: var(--text-h); font-variant-numeric: tabular-nums; }
+  .item.picked { border-color: var(--green); box-shadow: 0 0 0 1px var(--green) inset, var(--shadow-sm); }
+
+  /* Order summary */
+  .summary { margin-top: 26px; scroll-margin-top: 16px; }
+  .summary h2 {
+    font-family: var(--heading); font-weight: 800; font-size: 20px;
+    color: var(--red); margin: 0 0 10px; text-align: center;
+  }
+  .mode { display: flex; background: var(--green-bg); border: 1px solid var(--border); border-radius: 999px; padding: 3px; margin-bottom: 12px; }
+  .mode button {
+    flex: 1; border: none; background: none; padding: 8px; border-radius: 999px;
+    font: inherit; font-weight: 700; font-size: 14px; color: var(--green-dark); cursor: pointer;
+  }
+  .mode button.on { background: var(--green); color: #fff; box-shadow: var(--shadow-sm); }
+  .person-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .person-head .card-title { margin: 0; }
+  .person-total { font-family: var(--heading); font-weight: 800; color: var(--red); font-size: 18px; font-variant-numeric: tabular-nums; }
+  .line { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; padding: 3px 0; border-top: 1px dashed var(--border); }
+  .line:first-of-type { border-top: none; }
+  .line span:last-child { font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .muted { color: #7a6a5c; font-size: 14px; }
+  .grand {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; border-radius: 14px; margin: 4px 0 10px;
+    background: linear-gradient(180deg, var(--red-2), var(--red) 65%, var(--red-dark));
+    color: var(--cream); font-family: var(--heading); font-weight: 800; font-size: 18px;
+    box-shadow: 0 3px 0 var(--red-dark), var(--shadow-md);
+  }
+  .even-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 6px 0 4px; }
+  .even-amount { text-align: center; font-family: var(--heading); font-weight: 800; font-size: 26px; color: var(--green-dark); margin: 6px 0 2px; }
+  .clear-btn {
+    display: block; margin: 8px auto 0; background: none; border: none;
+    color: var(--red); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: underline;
+  }
+
+  /* Sticky total bar */
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    display: none;
+  }
+  .bar.show { display: block; }
+  .bar button {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; max-width: 448px; margin: 0 auto;
+    padding: 14px 18px; border-radius: 14px; cursor: pointer;
+    font-family: var(--heading); font-weight: 800; font-size: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0) 45%),
+                linear-gradient(180deg, #2d8a48, var(--green) 65%, var(--green-dark));
+    color: #fff; border: 1px solid var(--green-dark);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 3px 0 var(--green-dark), var(--shadow-lg);
+  }
+  .app.has-bar { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+
+  @media print {
+    .bar, .card.people, .stepper, .clear-btn, .mode { display: none !important; }
+    html, body { background: #fff; }
+    .controls, .chev { display: none; }
+    .items { display: flex !important; }
+    .category-group { break-inside: avoid; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="hero-row">
+      <figure class="qr-box">
+        <div class="qr" id="qr"></div>
+        <figcaption>Scan for<br />the app</figcaption>
+      </figure>
+      <div class="hero-title">
+        <div class="hero-icon">🐟</div>
+        <h1>Gerry's<span>Fish Bar</span></h1>
+      </div>
+      <a class="phone" id="phone" href="#">
+        <span class="phone-icon">📞</span>
+        <span class="phone-label">Call to order</span>
+        <span class="phone-num" id="phoneNum"></span>
+      </a>
+    </div>
+    <div class="hero-rule"></div>
+  </header>
+
+  <section class="card people">
+    <h2 class="card-title">Who's ordering?</h2>
+    <p class="hint">Tap a name, then tap <strong>+</strong> on their food.</p>
+    <div class="chips" id="people"></div>
+    <form class="add-row" id="addPerson">
+      <input id="personName" placeholder="Add a person…" maxlength="20" aria-label="Person's name" />
+      <button type="submit">Add</button>
+    </form>
+  </section>
+
+  <div class="controls">
+    <input class="search" id="search" type="search" placeholder="Search the menu…" aria-label="Search the menu" />
+    <button class="toggle-all" id="toggleAll" type="button">Open all</button>
+  </div>
+
+  <div id="menu"></div>
+  <p class="empty" id="empty">Nothing matches that — try another word.</p>
+
+  <section class="summary" id="summary">
+    <h2>Your order</h2>
+    <div class="mode" role="tablist">
+      <button type="button" data-mode="each" class="on">Pay for your own</button>
+      <button type="button" data-mode="even">Split evenly</button>
+    </div>
+    <div id="summaryBody"></div>
+  </section>
+
+  <p class="footer">Prices from the in-store menu board · <strong>Gerry's Fish Bar</strong></p>
+</main>
+
+<div class="bar" id="bar"><button type="button" id="barBtn"><span id="barCount"></span><span id="barTotal"></span></button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+  // ---- Contact details: edit these two lines ----
+  const APP_URL = '';             // Gerry's app download link — QR shows a placeholder until this is set
+  const PHONE = '01534 610958';   // from public business listings — confirm with Gerry's
+
+  document.getElementById('phoneNum').textContent = PHONE;
+  document.getElementById('phone').href = 'tel:+44' + PHONE.replace(/\D/g, '').replace(/^0/, '');
+  const qrEl = document.getElementById('qr');
+  if (APP_URL && window.qrcode) {
+    const qr = qrcode(0, 'M');
+    qr.addData(APP_URL);
+    qr.make();
+    qrEl.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  } else {
+    qrEl.classList.add('placeholder');
+    qrEl.textContent = 'QR code — app link needed';
+  }
+
+  // [name, price] rows; ['#Heading'] starts a sub-section within a category.
+  const MENU = [
+    { title: 'Fish', icon: '🐟', items: [
+      ['Cod & Chips', 12.50],
+      ['Haddock & Chips', 12.50],
+      ['Calamari & Chips', 8.70],
+      ['Scampi (9) & Chips', 10.50],
+      ['Fish Cake (1) & Chips', 6.00],
+    ]},
+    { title: 'Chips', icon: '🍟', items: [
+      ['Small Chips', 3.70],
+      ['Large Chips', 6.50],
+      ['Chips & Cheese', 5.70],
+      ['Chips, Cheese & Bacon', 7.00],
+      ['Beef Chips & Cheese', 7.00],
+      ['Chips & Curry', 6.20],
+      ['Chips & Gravy', 5.20],
+      ['Chip Butty', 4.70],
+    ]},
+    { title: 'Pies', icon: '🥧', note: 'All served with chips', items: [
+      ['Scotch Pie & Chips', 7.50],
+      ['Beef and Onion Pie & Chips', 7.50],
+      ['Meat and Potato Pie & Chips', 7.50],
+      ['Steak and Kidney Pie & Chips', 7.50],
+      ['Chicken Pie & Chips', 7.50],
+      ['Cornish Pasty & Chips', 7.50],
+    ]},
+    { title: 'Meat', icon: '🍗', items: [
+      ['Chicken Nuggets & Chips', 8.00],
+      ['½ Chicken & Chips', 11.20],
+      ['¼ Chicken & Chips', 7.70],
+      ['Sausage & Chips', 6.20],
+      ['Battered Sausage & Chips', 7.00],
+      ['Meatballs (4) & Chips', 7.70],
+      ['Hot Dog', 4.50],
+      ['Cheese Dog', 5.20],
+      ['Beef Cheese Dog', 6.00],
+      ['Chicken Wings', 7.50],
+      ['Roast Ribs', 12.00],
+    ]},
+    { title: 'Burgers', icon: '🍔', items: [
+      ['#Burgers'],
+      ['Beef Burger', 4.30],
+      ['Double Burger', 6.20],
+      ['Cheese Burger', 4.80],
+      ['Double Cheese Burger', 7.00],
+      ['Bacon Burger', 5.00],
+      ['Bacon Cheese Burger', 5.50],
+      ['Bacon Egg Burger', 5.70],
+      ['Bacon Egg Cheese Burger', 6.20],
+      ['Chicken Burger', 4.70],
+      ['Veggie Burger', 4.00],
+      ['#Rolls'],
+      ['Egg Roll', 2.50],
+      ['Bacon Roll', 3.50],
+      ['Bacon Egg Roll', 4.20],
+    ]},
+    { title: 'Individual / Sides', icon: '🧅', items: [
+      ['Cod', 8.80],
+      ['Haddock', 8.80],
+      ['Scampi (9)', 6.80],
+      ['Fish Cake (1)', 2.30],
+      ['Chicken Nuggets (7)', 4.30],
+      ['½ Chicken', 8.00],
+      ['¼ Chicken', 4.00],
+      ['Meatballs (4)', 4.00],
+      ['Sausage', 2.50],
+      ['Battered Sausage', 3.30],
+      ['Battered Burger', 3.30],
+      ['Onion Rings', 3.00],
+      ['Black Pudding', 3.00],
+      ['Spring Roll', 2.20],
+      ['Pies', 3.80],
+      ['Turkey Stick', 4.30],
+      ['Pickled Egg', 1.00],
+      ['Pickled Onion', 0.80],
+    ]},
+    { title: 'Sauces', icon: '🥫', items: [
+      ['Curry', 2.50],
+      ['Gravy', 1.50],
+      ['Tartar Sauce', 1.50],
+      ['Baked Beans', 1.50],
+      ['Mushy Peas', 1.50],
+      ['Sweet Chilli Sauce', 1.50],
+      ['Garlic Mayo', 1.50],
+      ['BBQ Sauce', 1.50],
+      ['Ketchup', 1.50],
+      ['Mayonnaise', 1.50],
+    ]},
+  ];
+
+  // Money is kept in pence so totals never pick up floating-point pennies.
+  const fmt = (p) => '£' + (p / 100).toFixed(2);
+  const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Flat lookup of every priced item: id -> { name, pence }
+  const ITEMS = {};
+  MENU.forEach((cat, c) => cat.items.forEach((row, i) => {
+    if (row.length === 2) ITEMS[`${c}-${i}`] = { name: row[0], pence: Math.round(row[1] * 100) };
+  }));
+
+  // ---- Order state (remembered on this device between visits) ----
+  const KEY = 'gerrys-order-v1';
+  let state = { people: [{ id: 1, name: 'Me' }], active: 1, nextId: 2, orders: {}, mode: 'each' };
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY));
+    if (saved && saved.people && saved.people.length) state = saved;
+  } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+  const qtyOf = (pid, itemId) => (state.orders[pid] || {})[itemId] || 0;
+  const personTotal = (pid) =>
+    Object.entries(state.orders[pid] || {}).reduce((s, [id, q]) => s + (ITEMS[id] ? ITEMS[id].pence * q : 0), 0);
+  const personCount = (pid) => Object.values(state.orders[pid] || {}).reduce((s, q) => s + q, 0);
+
+  function setQty(itemId, delta) {
+    const o = state.orders[state.active] || (state.orders[state.active] = {});
+    const q = Math.max(0, (o[itemId] || 0) + delta);
+    if (q) o[itemId] = q; else delete o[itemId];
+    save();
+    render();
+  }
+
+  // ---- Menu ----
+  const menuEl = document.getElementById('menu');
+
+  MENU.forEach((cat, c) => {
+    const count = cat.items.filter((r) => r.length === 2).length;
+    const group = document.createElement('section');
+    group.className = 'category-group' + (c === 0 ? ' open' : '');
+
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'category-pill';
+    pill.setAttribute('aria-expanded', c === 0);
+    pill.innerHTML = `<span>${cat.icon}</span><span>${cat.title}</span><span class="folder-count">(${count})</span><span class="chev">›</span>`;
+    pill.addEventListener('click', () => {
+      group.classList.toggle('open');
+      pill.setAttribute('aria-expanded', group.classList.contains('open'));
+    });
+
+    const items = document.createElement('div');
+    items.className = 'items';
+    if (cat.note) items.insertAdjacentHTML('beforeend', `<p class="note">${cat.note}</p>`);
+    cat.items.forEach((row, i) => {
+      if (row.length === 1) {
+        items.insertAdjacentHTML('beforeend', `<div class="subsection-header">${row[0].slice(1)}</div>`);
+        return;
+      }
+      const id = `${c}-${i}`;
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.dataset.search = row[0].toLowerCase();
+      el.dataset.id = id;
+      el.innerHTML = `<span class="item-name">${row[0]}</span>
+        <span class="item-right">
+          <span class="item-price">${fmt(ITEMS[id].pence)}</span>
+          <span class="stepper">
+            <button type="button" class="step minus" aria-label="Remove one ${row[0]}" hidden>−</button>
+            <span class="qty" hidden>0</span>
+            <button type="button" class="step plus" aria-label="Add ${row[0]}">+</button>
+          </span>
+        </span>`;
+      el.querySelector('.plus').addEventListener('click', () => setQty(id, 1));
+      el.querySelector('.minus').addEventListener('click', () => setQty(id, -1));
+      items.appendChild(el);
+    });
+
+    group.append(pill, items);
+    menuEl.appendChild(group);
+  });
+  const itemEls = [...menuEl.querySelectorAll('.item')];
+
+  // ---- People ----
+  const peopleEl = document.getElementById('people');
+  peopleEl.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const pid = Number(chip.dataset.pid);
+    if (e.target.closest('.chip-x')) {
+      const p = state.people.find((x) => x.id === pid);
+      if (personCount(pid) && !confirm(`Remove ${p.name} and their order?`)) return;
+      state.people = state.people.filter((x) => x.id !== pid);
+      delete state.orders[pid];
+      if (state.active === pid) state.active = state.people[0].id;
+    } else {
+      state.active = pid;
+    }
+    save();
+    render();
+  });
+  document.getElementById('addPerson').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('personName');
+    const name = input.value.trim() || `Person ${state.people.length + 1}`;
+    const id = state.nextId++;
+    state.people.push({ id, name });
+    state.active = id;
+    input.value = '';
+    save();
+    render();
+  });
+
+  // ---- Summary ----
+  document.querySelector('.mode').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    state.mode = b.dataset.mode;
+    save();
+    render();
+  });
+  const summaryBody = document.getElementById('summaryBody');
+  summaryBody.addEventListener('click', (e) => {
+    if (!e.target.closest('.clear-btn')) return;
+    if (!confirm("Clear everyone's order?")) return;
+    state.orders = {};
+    save();
+    render();
+  });
+
+  function renderSummary(grand) {
+    document.querySelectorAll('.mode button').forEach((b) => b.classList.toggle('on', b.dataset.mode === state.mode));
+    if (!grand) {
+      summaryBody.innerHTML = `<p class="muted" style="text-align:center">Nothing added yet — tap <strong>+</strong> on the menu.</p>`;
+      return;
+    }
+    let html = `<div class="grand"><span>Order total</span><span>${fmt(grand)}</span></div>`;
+
+    if (state.mode === 'even') {
+      const n = state.people.length;
+      const each = Math.floor(grand / n);
+      const extra = grand - each * n; // leftover pennies
+      html += `<div class="card" style="text-align:center">
+        <div class="muted">${fmt(grand)} split between ${n} ${n === 1 ? 'person' : 'people'}</div>
+        <div class="even-amount">${extra ? 'about ' + fmt(each + 1) : fmt(each) + ' each'}</div>
+        ${extra ? `<div class="muted">${extra} ${extra === 1 ? 'person pays' : 'people pay'} ${fmt(each + 1)}, ${n - extra} pay${n - extra === 1 ? 's' : ''} ${fmt(each)}</div>` : ''}
+        ${n === 1 ? '<div class="muted" style="margin-top:6px">Add people above to split it.</div>' : ''}
+      </div>`;
+    } else {
+      state.people.forEach((p) => {
+        const lines = Object.entries(state.orders[p.id] || {})
+          .filter(([id]) => ITEMS[id])
+          .map(([id, q]) => `<div class="line"><span>${q > 1 ? q + ' × ' : ''}${ITEMS[id].name}</span><span>${fmt(ITEMS[id].pence * q)}</span></div>`)
+          .join('');
+        html += `<div class="card">
+          <div class="person-head"><h3 class="card-title">${esc(p.name)}</h3><span class="person-total">${fmt(personTotal(p.id))}</span></div>
+          ${lines || '<div class="muted">Nothing yet</div>'}
+        </div>`;
+      });
+    }
+    html += `<button type="button" class="clear-btn">Clear order</button>`;
+    summaryBody.innerHTML = html;
+  }
+
+  // ---- Render everything from state ----
+  function render() {
+    peopleEl.innerHTML = state.people.map((p) => {
+      const t = personTotal(p.id);
+      return `<button type="button" class="chip${p.id === state.active ? ' active' : ''}" data-pid="${p.id}">
+        ${esc(p.name)}${t ? `<span class="chip-total">${fmt(t)}</span>` : ''}
+        ${state.people.length > 1 ? '<span class="chip-x" aria-label="Remove">×</span>' : ''}
+      </button>`;
+    }).join('');
+
+    itemEls.forEach((el) => {
+      const q = qtyOf(state.active, el.dataset.id);
+      el.querySelector('.qty').textContent = q;
+      el.querySelector('.qty').hidden = !q;
+      el.querySelector('.minus').hidden = !q;
+      el.classList.toggle('picked', q > 0);
+    });
+
+    const grand = state.people.reduce((s, p) => s + personTotal(p.id), 0);
+    const count = state.people.reduce((s, p) => s + personCount(p.id), 0);
+    document.getElementById('bar').classList.toggle('show', grand > 0);
+    document.querySelector('.app').classList.toggle('has-bar', grand > 0);
+    document.getElementById('barCount').textContent = `View order · ${count} item${count === 1 ? '' : 's'}`;
+    document.getElementById('barTotal').textContent = fmt(grand);
+    renderSummary(grand);
+  }
+  document.getElementById('barBtn').addEventListener('click', () =>
+    document.getElementById('summary').scrollIntoView({ behavior: 'smooth' }));
+
+  // ---- Search: show only matching items, open every category that has a hit ----
+  const groups = [...menuEl.querySelectorAll('.category-group')];
+  const openState = groups.map((g) => g.classList.contains('open'));
+  document.getElementById('search').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    let any = false;
+    groups.forEach((g, i) => {
+      const rows = [...g.querySelectorAll('.item')];
+      let hits = 0;
+      rows.forEach((r) => {
+        const match = !q || r.dataset.search.includes(q);
+        r.style.display = match ? '' : 'none';
+        if (match) hits++;
+      });
+      g.querySelectorAll('.subsection-header, .note').forEach((h) => (h.style.display = q ? 'none' : ''));
+      g.style.display = hits ? '' : 'none';
+      g.classList.toggle('open', q ? hits > 0 : openState[i]);
+      if (hits) any = true;
+    });
+    document.getElementById('empty').style.display = any ? 'none' : 'block';
+  });
+
+  const toggleBtn = document.getElementById('toggleAll');
+  toggleBtn.addEventListener('click', () => {
+    const openAll = toggleBtn.textContent === 'Open all';
+    groups.forEach((g) => g.classList.toggle('open', openAll));
+    toggleBtn.textContent = openAll ? 'Close all' : 'Open all';
+  });
+
+  render();
+</script>
+</body>
+</html>
