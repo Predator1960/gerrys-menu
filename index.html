@@ -539,12 +539,12 @@
   MENU.forEach((cat, c) => {
     const count = cat.items.filter((r) => r.length === 2).length;
     const group = document.createElement('section');
-    group.className = 'category-group' + (c === 0 ? ' open' : '');
+    group.className = 'category-group';
 
     const pill = document.createElement('button');
     pill.type = 'button';
     pill.className = 'category-pill';
-    pill.setAttribute('aria-expanded', c === 0);
+    pill.setAttribute('aria-expanded', false);
     pill.innerHTML = `<span>${cat.icon}</span><span>${cat.title}</span><span class="folder-count">(${count})</span><span class="chev">›</span>`;
     pill.addEventListener('click', () => {
       group.classList.toggle('open');
