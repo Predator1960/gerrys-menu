@@ -394,7 +394,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
   // ---- Contact details: edit these two lines ----
-  const APP_URL = '';             // Gerry's app download link — QR shows a placeholder until this is set
+  const APP_URL = '';             // Gerry's app download link — QR box stays hidden until this is set
   const PHONE = '01534 610958';   // from public business listings — confirm with Gerry's
 
   document.getElementById('phoneNum').textContent = PHONE;
@@ -406,8 +406,8 @@
     qr.make();
     qrEl.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
   } else {
-    qrEl.classList.add('placeholder');
-    qrEl.textContent = 'QR code — app link needed';
+    // No app link yet: hide the QR box but keep its space so the title stays centred.
+    qrEl.closest('.qr-box').style.visibility = 'hidden';
   }
 
   // [name, price] rows; ['#Heading'] starts a sub-section within a category.
